@@ -4,20 +4,22 @@
 #
 # CSCI 305 - Ruby Programming Lab
 #
-# <firstname> <lastname>
-# <email-address>
+# <Henry> <Barker>
+# <henrybarker00@gmail.com>
 #
 ###############################################################
 
 $bigrams = Hash.new # The Bigram data structure
-$name = "<firstname> <lastname>"
+$name = "Henry Barker"
 
 # function to process each line of a file and extract the song titles
 def process_file(file_name)
 	puts "Processing File.... "
-
+  title_regex = /[^>]+$/mi
 	begin
 		IO.foreach(file_name) do |line|
+			line =~ title_regex
+			puts "Title: #{$&}"
 			# do something for each line
 		end
 
