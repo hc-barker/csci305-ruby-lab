@@ -1,0 +1,11 @@
+^(?:(?!feat\.)[^({['\\\/_\-:"+=*])+
+[^?¿!¡.;&@%#|]+
+blah blah (extended edition) [radio edit] feat. arti
+hello fwold feat. $$$
+aaa [mega mix] = cool
+bnra = tnha
+nteaor+
+
+song \ name
+name / song
+(.+?)(?= feat.)

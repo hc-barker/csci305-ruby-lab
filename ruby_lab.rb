@@ -16,12 +16,26 @@ $name = "Henry Barker"
 def process_file(file_name)
 	puts "Processing File.... "
   title_regex = /[^>]+$/mi
+	superfluous_text_regex = /^(?:(?!feat\.)[^\({\['\\\/_\-:"+=*])+/mi
+  punctuation_regex = /[?¿!¡.;&@%#|]+/
+	non_english_regex = /[\w'\s]+/
+	total = 0
 	begin
 		IO.foreach(file_name) do |line|
 			line =~ title_regex
-			puts "Title: #{$&}"
-			# do something for each line
+			$& =~ superfluous_text_regex
+			no_punctuation_title = $&.gsub(punctuation_regex,'')
+			temp = no_punctuation_title.gsub(non_english_regex, '')
+			if(temp.eql? '')
+				no_punctuation_title.downcase!
+				total = total + 1
+				puts "Title: #{no_punctuation_title}"
+			else
+				puts "NO MATCH"
+			end
+						# do something for each line
 		end
+		puts "Total tracks: #{total}"
 
 		puts "Finished. Bigram model built.\n"
 	rescue
