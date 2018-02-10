@@ -8,31 +8,47 @@
 # <henrybarker00@gmail.com>
 #
 ###############################################################
-
+require 'enumerator'
 $bigrams = Hash.new # The Bigram data structure
 $name = "Henry Barker"
 
+def cleanup_title(line)
+	title_regex = /[^>]+$/mi
+	superfluous_text_regex = /^(?:(?!feat\.)[^\({\['\\\/_\-:"+=*])+/
+	punctuation_regex = /[?¿!¡.;&@%#|]+/
+	non_english_regex = /[\w'\s]+/
+	line =~ title_regex
+	$& =~ superfluous_text_regex
+	no_punctuation_title = $&.gsub(punctuation_regex,'')
+	temp = no_punctuation_title.gsub(non_english_regex, '')
+	if(temp.eql? '')
+		no_punctuation_title.downcase!
+		puts "Title: #{no_punctuation_title}"
+		return no_punctuation_title
+	else
+		puts "NO MATCH"
+		return "NO MATCH"
+	end
+end
 # function to process each line of a file and extract the song titles
+def bigram(string)
+	string.split(' ').each_cons(2).to_a
+end
 def process_file(file_name)
 	puts "Processing File.... "
-  title_regex = /[^>]+$/mi
-	superfluous_text_regex = /^(?:(?!feat\.)[^\({\['\\\/_\-:"+=*])+/mi
-  punctuation_regex = /[?¿!¡.;&@%#|]+/
-	non_english_regex = /[\w'\s]+/
 	total = 0
 	begin
 		IO.foreach(file_name) do |line|
-			line =~ title_regex
-			$& =~ superfluous_text_regex
-			no_punctuation_title = $&.gsub(punctuation_regex,'')
-			temp = no_punctuation_title.gsub(non_english_regex, '')
-			if(temp.eql? '')
-				no_punctuation_title.downcase!
-				total = total + 1
-				puts "Title: #{no_punctuation_title}"
+
+			if(cleanup_title(line).eql? "NO MATCH")
+				next
 			else
-				puts "NO MATCH"
+				total += 1
 			end
+			title = cleanup_title(line)
+			text = bigram(title)
+			puts text.inspect
+
 						# do something for each line
 		end
 		puts "Total tracks: #{total}"
