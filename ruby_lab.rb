@@ -20,6 +20,7 @@ def cleanup_title line
 	#get rid of annoying punctuation
 	no_punctuation_title = no_superfluous_title.gsub(/[?¿!¡.;&@%#|]/, "")
 	#if the title has non english characters
+
 	if no_punctuation_title =~ /.*[^\w\s'].*/
 		return "NO MATCH"
 	else
@@ -29,7 +30,7 @@ def cleanup_title line
 end
 
 def mcw(string)
-	if($bigrams.has_key?(string)) #if the bigram hash has the word
+	if($bigrams.has_key?(string) != nil) #if the bigram hash has the word
 		#look at the secondary hash that contains all the following Words
 		#this looks like {following, frequency} so we can use
 		#max_by to sort by frequency and return following of the hightest frequency
@@ -60,7 +61,9 @@ def process_file(file_name)
 				end
 			end
 			text.each do |bigram|
-				if($bigrams[bigram[0]].has_key?(bigram[1]))
+				if(bigram[1] =~ /^(a|an|and|by|for|from|in|of|on|or|out|the|to|with)$/)
+					next
+				elsif($bigrams[bigram[0]].has_key?(bigram[1]))
 				  $bigrams[bigram[0]][bigram[1]] = $bigrams[bigram[0]][bigram[1]]+1
 				else
 					$bigrams[bigram[0]][bigram[1]] = 1
@@ -77,12 +80,22 @@ def process_file(file_name)
 end
 
 def create_title(seed)
+	title_list = []
 	count = 1
 	temp = seed
-	final = seed
-	while(count < 20)
+	title_list[0] = seed
+	if($bigrams.has_key?(seed))
+		final = seed
+	else
+		return ""
+	end
+	while(title_list.include?(mcw(temp)))
+		if(mcw(temp).eql? '')
+			return final
+		end
 		if($bigrams.has_key?(mcw(temp)))
 			final = final + " " + mcw(temp)
+			title_list[count] = mcw(temp)
 			count = count + 1
 		else
 			return final
