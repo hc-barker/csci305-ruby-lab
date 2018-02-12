@@ -90,9 +90,6 @@ def create_title(seed)
 		return ""
 	end
 	while(title_list.include?(mcw(temp)))
-		if(mcw(temp).eql? '')
-			return final
-		end
 		if($bigrams.has_key?(mcw(temp)))
 			final = final + " " + mcw(temp)
 			title_list[count] = mcw(temp)
