@@ -76,6 +76,22 @@ def process_file(file_name)
 	end
 end
 
+def create_title(seed)
+	count = 1
+	temp = seed
+	final = seed
+	while(count < 20)
+		if($bigrams.has_key?(mcw(temp)))
+			final = final + " " + mcw(temp)
+			count = count + 1
+		else
+			return final
+		end
+		temp = mcw(temp)
+	end
+	return final
+end
+
 # Executes the program
 def main_loop()
 	puts "CSCI 305 Ruby Lab submitted by #{$name}"
@@ -89,6 +105,23 @@ def main_loop()
 	process_file(ARGV[0])
 
 	# Get user input
+	running = true
+	prompt = "Enter a word [Enter 'q' to quit]"
+	fancy_prompter = "> "
+	while(running)
+		puts "Enter a word [Enter 'q' to quit]"
+		puts fancy_prompter
+		while(input = $stdin.gets.chomp.downcase)
+			case input
+			when 'q'
+				puts "Thanks for making music"
+				running = false
+				break
+			else
+				puts create_title(input)
+			end
+		end
+	end
 end
 
 if __FILE__==$0
