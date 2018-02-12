@@ -11,45 +11,61 @@
 require 'enumerator'
 $bigrams = Hash.new # The Bigram data structure
 $name = "Henry Barker"
-
-def cleanup_title(line)
-	title_regex = /[^>]+$/mi
-	superfluous_text_regex = /^(?:(?!feat\.)[^\({\['\\\/_\-:"+=*])+/
-	punctuation_regex = /[?¿!¡.;&@%#|]+/
-	non_english_regex = /[\w'\s]+/
-	line =~ title_regex
-	$& =~ superfluous_text_regex
-	no_punctuation_title = $&.gsub(punctuation_regex,'')
-	temp = no_punctuation_title.gsub(non_english_regex, '')
-	if(temp.eql? '')
-		no_punctuation_title.downcase!
-		puts "Title: #{no_punctuation_title}"
-		return no_punctuation_title
-	else
-		puts "NO MATCH"
+def cleanup_title line
+	#matches anything after > and before the end of the line
+	#this will always be after the last <SEP>
+	line =~ /[^>]+$/mi
+	#get rid of feat. and anything after the other superfluous seperators
+	no_superfluous_title = $&.sub(/(([\(\[{\\\/_\-:"+=*]|(feat\.)).*)/, "")
+	#get rid of annoying punctuation
+	no_punctuation_title = no_superfluous_title.gsub(/[?¿!¡.;&@%#|]/, "")
+	#if the title has non english characters
+	if no_punctuation_title =~ /.*[^\w\s'].*/
 		return "NO MATCH"
+	else
+		#if the title is all english downcase it and return
+		return no_punctuation_title.downcase.chomp
+	end
+end
+
+def mcw(string)
+	if($bigrams.has_key?(string)) #if the bigram hash has the word
+		#look at the secondary hash that contains all the following Words
+		#this looks like {following, frequency} so we can use
+		#max_by to sort by frequency and return following of the hightest frequency
+		return $bigrams[string].max_by{|following,freq| freq}[0]
+	else #if the bigram hash does not have the word
+		return ''
 	end
 end
 # function to process each line of a file and extract the song titles
-def bigram(string)
-	string.split(' ').each_cons(2).to_a
-end
 def process_file(file_name)
 	puts "Processing File.... "
 	total = 0
 	begin
 		IO.foreach(file_name) do |line|
-
-			if(cleanup_title(line).eql? "NO MATCH")
+			#puts line
+			title = cleanup_title(line)
+			if(title.eql? "NO MATCH")
 				next
 			else
 				total += 1
 			end
-			title = cleanup_title(line)
-			text = bigram(title)
-			puts text.inspect
-
-						# do something for each line
+			title.downcase!
+			text = title.split(' ').each_cons(2).to_a
+			#puts text.inspect
+			text.each do |str|
+				if !$bigrams.has_key?(str[0])
+					$bigrams[str[0]] = Hash.new
+				end
+			end
+			text.each do |bigram|
+				if($bigrams[bigram[0]].has_key?(bigram[1]))
+				  $bigrams[bigram[0]][bigram[1]] = $bigrams[bigram[0]][bigram[1]]+1
+				else
+					$bigrams[bigram[0]][bigram[1]] = 1
+				end
+			end
 		end
 		puts "Total tracks: #{total}"
 
