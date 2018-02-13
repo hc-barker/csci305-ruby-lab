@@ -15,7 +15,7 @@ and if it was a new word I added it to a list that kept track of words that had 
 
 18. bob marley vs me down south side story ends burning up your love you are
 
-19. I get the same title again no matter how many times I run it. I think this is because instead of creating my own function to find the 
+19. I get the same title again no matter how many times I run it. I think this is because instead of creating my own function to find the
  most common word in the hash, I just used the Enumerable function hash.max_by, which probably chooses the word deterministically every time
 
 20. "police state street blues away too much love you are"
@@ -28,7 +28,7 @@ and if it was a new word I added it to a list that kept track of words that had 
   It was always scary making a variable and hoping Ruby would know it was a string and not a Fixnum or some random class that would cause my
     code to error. The worst part is the strange way Ruby makes some things global secretly, or how by opening a file, it permanently changed
     gets to be reading from the file instead of standard in, which caused me great grief in getting user input to work.
-    I actually have no idea what ruby does with variables it is incredibly frustrating and i hate it so much. i want to know what my code does!!!!
+    I actually have no idea what ruby does with variables it is incredibly frustrating. i want to know what my code does!
 
 23. I loved this lab. This was the first time in all the CS classes I have taken that the lab involved more thinking
   than just making an array and a for loop. It was very fun to solve the problem, and it took some creativity, which
